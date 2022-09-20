@@ -46,11 +46,11 @@ void append(struct Node** head, int value)
 void display(struct Node* head)
 {
     if (head == NULL) {
-        printf("Empty linked list");
+        printf("Empty linked list \n");
         return;
     }
     struct Node* temp = head;
-    printf("\n Linked List :");
+    printf("\n Linked List : ");
     while (temp != NULL) {
         printf("  %d", temp->data);
         temp = temp->next;
@@ -163,7 +163,7 @@ bool search(struct Node* head, int x)
 }
 
 void serialize(struct Node* root) {
-    FILE* file = fopen("list.txt", "w");
+    FILE* file = fopen("data.txt", "w");
     if (file == NULL) {
         exit(1);
     }
@@ -175,7 +175,7 @@ void serialize(struct Node* root) {
 }
 
 void deserialize(struct Node** root) {
-    FILE* file = fopen("list.txt", "r");
+    FILE* file = fopen("data.txt", "r");
     if (file == NULL) {
         exit(2);
     }
@@ -187,14 +187,63 @@ void deserialize(struct Node** root) {
     fclose(file);
 }
 
+void Insert(struct Node** head){
+    //UI
+    int pos, x;
+    printf("type the position of the new node: \n");
+    printf(" > ");
+    scanf("%d", &pos);
+    printf("type the value of the new node: \n");
+    printf(" > ");
+    scanf("%d", &x);
+
+    //Logic
+    struct Node* temp1 = (struct Node*)malloc(sizeof(struct Node));
+    temp1->data = x;
+    temp1->next = NULL;
+    if (pos == 1){
+        temp1->next = *head;
+        *head = temp1;
+        return;
+    }
+
+    struct Node* temp2 = *head;
+    for (int i = 0; i < pos-2; i++){
+        temp2 = temp2 -> next;
+    }
+
+    temp1->next = temp2->next;
+    temp2->next = temp1;
+}
+
+void Delete(struct Node** head){
+    //UI
+    int pos;
+    printf("type the position of the node to delete: ");
+    printf(" > ");
+    scanf("%d", &pos);
+
+    //Logic
+    struct Node* temp1 = *head;
+    
+    if(pos==1){
+        *head = temp1->next; //head now points to seconde node
+        free(temp1);
+        return;
+    }
+    for (int i = 0; i < pos-2; i++)
+        temp1 = temp1->next;
+    //temp1 points to (n-1)th Node
+    struct Node* temp2 = temp1->next; //nth node
+    temp1->next =temp2->next; //(n+1)th node
+    free(temp2);
+}
+
 
 int main()
 {
     struct Node* head = NULL;
-    
-    append(&head, 12);
-    append(&head, 16);
-    display(head);
+        display(head);
     
 
     
@@ -213,6 +262,8 @@ int main()
         printf("6. Sort the linked list\n");
         printf("7. Search for a value \n");
         printf("8. Display list\n");
+        printf("9. Serialize\n");
+        printf("10.Deserialize\n");
         printf("0. Exit\n\n\n");
         printf("Enter your choice :  ");
         scanf("%d",&choice);
@@ -238,11 +289,11 @@ int main()
             }
             
             case 4:
-                printf("Enter number:\n");
+                Insert(&head);
                 break;
                 
             case 5:
-                printf("Enter number:\n");
+                Delete(&head);
                 break;
             
             case 6:
@@ -260,6 +311,14 @@ int main()
                 
             case 8:
                 display(head);
+                break;
+                
+            case 9:
+                serialize(head);
+                break;
+                
+            case 10:
+                deserialize(&head);
                 break;
                 
             case 0:
